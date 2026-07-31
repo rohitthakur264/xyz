@@ -1,0 +1,10 @@
+mysql-connector-python
+chromadb
+ollama
+python-dotenv
+sqlglot
+fastapi
+streamlit
+uvicorn
+pydantic
+pypdf
