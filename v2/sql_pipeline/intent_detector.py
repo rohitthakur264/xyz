@@ -23,6 +23,29 @@ class IntentDetector:
         self.llm = llm_client
 
     def detect_intent(self, question: str) -> str:
+        q_lower = question.lower()
+        if any(w in q_lower for w in ["visit", "encounter", "admission"]):
+            logger.info(f"Fast intent detected: VISIT for '{question}'")
+            return "VISIT"
+        if any(w in q_lower for w in ["bill", "billing", "invoice", "payment", "amount", "charge", "deposit"]):
+            logger.info(f"Fast intent detected: BILLING for '{question}'")
+            return "BILLING"
+        if any(w in q_lower for w in ["prescript", "medicine", "drug", "pharmacy"]):
+            logger.info(f"Fast intent detected: PRESCRIPTION for '{question}'")
+            return "PRESCRIPTION"
+        if any(w in q_lower for w in ["lab", "test", "result"]):
+            logger.info(f"Fast intent detected: LAB for '{question}'")
+            return "LAB"
+        if any(w in q_lower for w in ["vital", "bp", "pulse", "temp", "weight"]):
+            logger.info(f"Fast intent detected: VITALS for '{question}'")
+            return "VITALS"
+        if any(w in q_lower for w in ["allergy", "allergic"]):
+            logger.info(f"Fast intent detected: ALLERGY for '{question}'")
+            return "ALLERGY"
+        if any(w in q_lower for w in ["reg", "registration", "patient", "mrn"]) and len(question.split()) <= 5:
+            logger.info(f"Fast intent detected: PATIENT_SEARCH for '{question}'")
+            return "PATIENT_SEARCH"
+
         prompt = f"""You are a clinical AI intent classifier.
 Categorize the following question into exactly ONE of the following intents:
 {', '.join(INTENTS)}
