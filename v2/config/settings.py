@@ -4,9 +4,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # LLM settings
-ANSWER_MODEL = os.getenv("ANSWER_MODEL", "qwen2.5:14b")
+ANSWER_MODEL = os.getenv("ANSWER_MODEL", "llama3.1:8b")
 LLM_MODEL = ANSWER_MODEL
-SQL_MODEL = os.getenv("SQL_MODEL", "qwen2.5-coder:14b")
+SQL_MODEL = os.getenv("SQL_MODEL", "qwen2.5-coder:7b")
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.1"))
 
 # Database Configuration
