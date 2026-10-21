@@ -1,0 +1,130 @@
+{
+  "_README": "Column names below are now taken directly from the live schema_cache.json dump (scripts/dump_insert_tables_columns.py), not guessed. A few columns were genuinely AMBIGUOUS (multiple plausible candidates existed) - these are marked '_AMBIGUOUS_' in a comment next to the entity and MUST be confirmed against real data (e.g. a SELECT on an existing row) before ENABLE_WRITE_OPERATIONS=true. Run scripts/verify_insert_schema.py after any edit here.",
+
+  "entities": {
+    "lab_test": {
+      "label": "Lab Test Order",
+      "table": "fhir_order_dtl",
+      "patient_column": "patientid",
+      "created_by_column": "insertedbyuserid",
+      "created_at_column": "insertedon",
+      "id_column": "orddtlid",
+      "default_values": {
+        "ordqty": 1,
+        "nonchargableamt": 0.0,
+        "serviceamount": 0.0,
+        "emergencyamount": 0.0,
+        "netamount": 0.0,
+        "stddiscount": 0.0,
+        "servrendered": 1,
+        "isservicechargeable": 1,
+        "servrenderingdeptid": 0,
+        "servrenderingsubdeptid": 0,
+        "servbilled": 1,
+        "orddatetime": "{NOW}",
+        "ordschdatetime": "{NOW}",
+        "billingclassid": 1,
+        "tariffscheme_id": 1,
+        "patclassid": 1,
+        "bedid": 0,
+        "roomid": 0,
+        "wardid": 0,
+        "emergencyflag": 0,
+        "hcid": 0,
+        "docid": 0,
+        "drugid": 0,
+        "storeid": 0,
+        "markforpending": 1,
+        "batchid": 0,
+        "updatedby": 0,
+        "insertedmacname": "AI-ASSISTANT",
+        "insertedmacid": "00:00:00:00",
+        "insertedipaddress": "127.0.0.1",
+        "otbillid": 0,
+        "otscheduleid": 0,
+        "surchargeamt": 0.0,
+        "labstatus": 0,
+        "basetariffid": 0
+      },
+      "requires_master": {
+        "table": "fhir_order_mst",
+        "patient_column": "ordpatientid",
+        "visit_column": "ordvisitid",
+        "date_column": "orddatetime",
+        "doctor_column": "ordbydocid",
+        "created_by_column": "insertedbyuserid",
+        "id_column": "ordid",
+        "fk_column_in_detail": "ordid",
+        "default_values": {
+          "ordpriority": "L",
+          "ordpatientbedid": 0,
+          "wardid": 0,
+          "warddeptid": 0,
+          "refdoctor": 0,
+          "refinstitute": 0,
+          "refertodoctor": 0,
+          "refertoinstitute": 0,
+          "updatedby": 0,
+          "locid": 1
+        }
+      },
+      "fields": [
+        {"key": "test_name", "column": "serviceid", "label": "Test Name", "type": "lookup", "lookup_table": "fhir_lab_test_mst", "lookup_id_col": "serviceid", "lookup_display_col": "display", "lookup_populate_fields": {"test_name": "display"}, "required": true}
+      ]
+    },
+
+    "vitals": {
+      "label": "Vitals",
+      "table": "fhir_tprbp_dtl",
+      "patient_column": "patientid",
+      "visit_column": "visitid",
+      "created_by_column": "insertedbyuserid",
+      "created_at_column": "insertedon",
+      "id_column": "id",
+      "_AMBIGUOUS_visit_column": "table has BOTH 'visit_id' and 'visitid' columns. Using 'visitid' for consistency with the other tables in this file, but this is a guess - run `SELECT visit_id, visitid FROM fhir_tprbp_dtl LIMIT 5` and confirm which one actually holds real visit references before enabling writes.",
+      "fields": [
+        {"key": "systolic_bp", "column": "systolic", "label": "Systolic BP (mmHg)", "type": "number", "required": true, "min": 40, "max": 300},
+        {"key": "diastolic_bp", "column": "diastolic", "label": "Diastolic BP (mmHg)", "type": "number", "required": true, "min": 20, "max": 200},
+        {"key": "temperature", "column": "temperature", "label": "Temperature (°C)", "type": "number", "required": true, "min": 30, "max": 45},
+        {"key": "pulse", "column": "pulse", "label": "Pulse (bpm)", "type": "number", "required": true, "min": 20, "max": 250},
+        {"key": "respiratory_rate", "column": "respiratory", "label": "Respiratory Rate (/min)", "type": "number", "required": true, "min": 4, "max": 80},
+        {"key": "recorded_at", "column": "reading_datetime", "label": "Recorded At", "type": "datetime", "required": true}
+      ]
+    },
+
+    "prescription": {
+      "label": "Prescription",
+      "table": "fhir_prescription_dtl",
+      "created_by_column": "insertedbyuserid",
+      "created_at_column": "insertedon",
+      "id_column": "id",
+      "default_values": {
+        "isactive": 1,
+        "startdate": "{NOW}"
+      },
+      "_AMBIGUOUS_drug_reference": "fhir_drug_mst is really an inventory/item master (has standardrate, currentqty, etc), not just a drug-name list. prescription_dtl doesn't have a 'drugid' column - the closest candidate is 'itemid'. Using itemid -> fhir_drug_mst.id. Please confirm this is really how your app links a prescribed drug to the item master before enabling writes.",
+      "requires_master": {
+        "table": "fhir_prescription_mst",
+        "patient_column": "patientid",
+        "visit_column": "visitid",
+        "date_column": "datetime",
+        "created_by_column": "insertedbyuserid",
+        "created_at_column": "datetime",
+        "doctor_column": "doctorid",
+        "id_column": "id",
+        "default_values": {
+          "isactive": 1
+        },
+        "fk_column_in_detail": "preid"
+      },
+      "fields": [
+        {"key": "drug_id", "column": "itemid", "label": "Drug", "type": "lookup", "lookup_table": "fhir_drug_mst", "lookup_id_col": "id", "lookup_display_col": "display", "lookup_populate_fields": {"code": "code", "display": "display", "display_arb": "display_arb", "system": "system", "genericid": "genericid", "medicinetypeid": "typeid"}, "generic_match_column": "scientificnm", "required": true},
+        {"key": "dosage", "column": "dosage", "label": "Dosage (e.g. 500mg)", "type": "text", "required": true},
+        {"key": "frequency_id", "column": "frequency", "label": "Frequency", "type": "lookup", "lookup_table": "fhir_prescription_frequency", "lookup_id_col": "id", "lookup_display_col": "display", "required": true},
+        {"key": "duration_days", "column": "duration", "label": "Duration (days)", "type": "number", "required": true, "min": 1, "max": 365},
+        {"key": "quantity", "column": "quantity", "label": "Quantity", "type": "number", "required": true, "min": 1, "max": 1000},
+        {"key": "instructions", "column": "notes", "label": "Instructions", "type": "text", "required": false}
+      ]
+    }
+  }
+}

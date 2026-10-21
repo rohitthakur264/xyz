@@ -23,17 +23,39 @@ class SchemaLoader:
 
     def load_schema(self) -> dict:
         """Loads tables, columns, PKs, and FKs from INFORMATION_SCHEMA, applying filtering."""
+        from config.settings import SCHEMA_CACHE_FILE
+        use_cache = os.getenv("USE_SCHEMA_CACHE", "True").lower() in ("true", "1", "yes")
+
+        if use_cache and os.path.exists(SCHEMA_CACHE_FILE):
+            logger.info(f"Loading schema from cache: {SCHEMA_CACHE_FILE}")
+            try:
+                with open(SCHEMA_CACHE_FILE, 'r') as f:
+                    raw_schema = json.load(f)
+                sanitized_schema = {}
+                for t, info in raw_schema.items():
+                    info_copy = dict(info)
+                    info_copy["columns"] = [c for c in info.get("columns", []) if not self.should_ignore_column(c["column_name"])]
+                    if len(info_copy["columns"]) > 0:
+                        sanitized_schema[t] = info_copy
+                logger.info(f"Loaded and sanitized {len(sanitized_schema)} tables from schema cache.")
+                return sanitized_schema
+            except Exception as e:
+                logger.warning(f"Failed to load from cache ({e}). Proceeding to load from DB.")
+
         logger.info(f"Loading schema for database: {self.db_name}")
         schema = {}
         try:
             conn = get_connection()
             cursor = conn.cursor(dictionary=True)
+            
+            logger.info("Executing query to load Tables...")
             # 1. Load Tables
             cursor.execute("""
                 SELECT TABLE_NAME, TABLE_COMMENT 
                 FROM INFORMATION_SCHEMA.TABLES 
                 WHERE TABLE_SCHEMA = %s AND TABLE_TYPE = 'BASE TABLE'
             """, (self.db_name,))
+            logger.info("Tables query completed.")
             for row in cursor.fetchall():
                 t_name = row['TABLE_NAME']
                 schema[t_name] = {
@@ -47,12 +69,14 @@ class SchemaLoader:
                 }
                 
             # 2. Load Columns
+            logger.info("Executing query to load Columns...")
             cursor.execute("""
                 SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, COLUMN_KEY 
                 FROM INFORMATION_SCHEMA.COLUMNS 
                 WHERE TABLE_SCHEMA = %s
                 ORDER BY ORDINAL_POSITION
             """, (self.db_name,))
+            logger.info("Columns query completed.")
             for row in cursor.fetchall():
                 t_name = row['TABLE_NAME']
                 c_name = row['COLUMN_NAME']
@@ -65,6 +89,7 @@ class SchemaLoader:
                         schema[t_name]["primary_key"] = c_name
 
             # 3. Load Foreign Keys
+            logger.info("Executing query to load Foreign Keys...")
             cursor.execute("""
                 SELECT 
                     TABLE_NAME, 
@@ -74,6 +99,7 @@ class SchemaLoader:
                 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
                 WHERE TABLE_SCHEMA = %s AND REFERENCED_TABLE_NAME IS NOT NULL
             """, (self.db_name,))
+            logger.info("Foreign Keys query completed.")
             for row in cursor.fetchall():
                 t_name = row['TABLE_NAME']
                 c_name = row['COLUMN_NAME']
@@ -91,24 +117,20 @@ class SchemaLoader:
             # 4. Remove tables that ended up with no columns after filtering (rare, but good to clean)
             schema = {k: v for k, v in schema.items() if len(v["columns"]) > 0}
             
+            if use_cache:
+                try:
+                    os.makedirs(os.path.dirname(SCHEMA_CACHE_FILE), exist_ok=True)
+                    with open(SCHEMA_CACHE_FILE, 'w') as f:
+                        json.dump(schema, f, indent=2)
+                    logger.info(f"Saved schema cache to {SCHEMA_CACHE_FILE}")
+                except Exception as e:
+                    logger.warning(f"Failed to save schema cache: {e}")
+
             logger.info(f"Loaded and sanitized {len(schema)} tables.")
             return schema
 
         except Exception as e:
-            logger.warning(f"Error connecting to database ({e}). Falling back to cached schema...")
-            from config.settings import SCHEMA_CACHE_FILE
-            if os.path.exists(SCHEMA_CACHE_FILE):
-                with open(SCHEMA_CACHE_FILE, 'r') as f:
-                    raw_schema = json.load(f)
-                sanitized_schema = {}
-                for t, info in raw_schema.items():
-                    info_copy = dict(info)
-                    info_copy["columns"] = [c for c in info.get("columns", []) if not self.should_ignore_column(c["column_name"])]
-                    if len(info_copy["columns"]) > 0:
-                        sanitized_schema[t] = info_copy
-                logger.info(f"Loaded and sanitized {len(sanitized_schema)} tables from schema cache file: {SCHEMA_CACHE_FILE}")
-                return sanitized_schema
-            logger.error(f"Error loading schema and schema cache not found: {e}")
+            logger.error(f"Error connecting to database or loading schema: {e}")
             raise
         finally:
             if 'cursor' in locals() and cursor:

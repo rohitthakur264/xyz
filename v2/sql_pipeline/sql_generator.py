@@ -1,7 +1,7 @@
 import re
-from llm.ollama_client import OllamaClient
+from llm.llm_client import LLMClient
 from llm.prompt_builder import (
-    SYSTEM_PROMPT, BUSINESS_RULES, build_schema_section, 
+    SYSTEM_PROMPT, build_business_rules, build_schema_section, build_joins_section,
     build_examples_section, build_context_section, build_error_correction_section
 )
 from config.settings import SQL_MODEL
@@ -12,7 +12,7 @@ logger = get_logger(__name__)
 class SQLGenerator:
     """Generates SQL using Ollama."""
     
-    def __init__(self, llm_client: OllamaClient, full_schema_cache: dict):
+    def __init__(self, llm_client: LLMClient, full_schema_cache: dict):
         self.llm = llm_client
         self.schema_cache = full_schema_cache
 
@@ -21,8 +21,9 @@ class SQLGenerator:
         logger.info(f"Generating SQL for question: {question}")
         
         prompt = f"{SYSTEM_PROMPT}\n\n"
-        prompt += f"{BUSINESS_RULES}\n\n"
+        prompt += build_business_rules(self.schema_cache, plan.get("intent")) + "\n\n"
         prompt += build_schema_section(plan["tables"], self.schema_cache) + "\n"
+        prompt += build_joins_section(plan.get("joins", [])) + "\n"
         prompt += build_examples_section(plan["examples"]) + "\n"
         prompt += build_context_section(plan["session_context"]) + "\n"
         prompt += build_error_correction_section(errors) + "\n"
@@ -33,21 +34,42 @@ class SQLGenerator:
         return self.clean_sql(raw_sql)
 
     def clean_sql(self, raw_sql: str) -> str:
-        """Strips markdown and sanitizes the output."""
+        """Strips markdown, leading prose, and trailing explanation from the output."""
         sql = raw_sql.strip()
-        # Remove markdown code blocks if the model hallucinates them
-        sql = re.sub(r"```sql\s*(.*?)\s*```", r"\1", sql, flags=re.DOTALL)
-        sql = re.sub(r"```\s*(.*?)\s*```", r"\1", sql, flags=re.DOTALL)
+
+        # Some models use <think> tags for CoT
+        sql = re.sub(r"<think>.*?</think>\n*", "", sql, flags=re.DOTALL)
         
-        # Remove any leading 'sql' keyword
+        # If the model used markdown, extract the LAST sql block
+        matches = re.findall(r"```(?:sql)?\s*(.*?)\s*```", sql, flags=re.DOTALL | re.IGNORECASE)
+        if matches:
+            sql = matches[-1].strip()
+
+        # Remove any leading 'sql' keyword if it leaked from markdown
         if sql.lower().startswith("sql\n"):
             sql = sql[4:].strip()
-            
-        # Ensure single line or clean whitespace
-        sql = sql.replace('\n', ' ').strip()
-        
-        # Remove trailing semicolon for uniformity (we can add it later if needed)
-        if sql.endswith(';'):
-            sql = sql[:-1]
-            
+
+        # The model sometimes wraps the query in explanatory prose even without markdown.
+        # Find the LAST SELECT statement to skip the "Chain of Thought" text
+        idx = sql.upper().rfind("SELECT ")
+        if idx != -1:
+            sql = sql[idx:].strip()
+
+        # Strip standard SQL comments if they cause issues when flattened later
+        lines = []
+        for line in sql.splitlines():
+            line = line.strip()
+            if not line.startswith("--") and not line.startswith("//"):
+                lines.append(line)
+        sql = " ".join(lines).strip()
+
+        # Trim anything after the statement terminator
+        semi = sql.find(';')
+        if semi != -1:
+            sql = sql[:semi].strip()
+
+        # Remove trailing markdown if model forgot closing tag
+        if sql.endswith("```"):
+            sql = sql[:-3].strip()
+
         return sql

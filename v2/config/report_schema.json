@@ -1,0 +1,667 @@
+{
+  "sections": [
+    {
+      "id": "demographics_1",
+      "title": "Demographics",
+      "anchor": "patient",
+      "alias": "p",
+      "joins": [
+        {
+          "anchor": "gender",
+          "alias": "g",
+          "type": "LEFT JOIN",
+          "from_alias": "p",
+          "via_column": "Gender"
+        }
+      ],
+      "select": [
+        {
+          "column": "p.first_name",
+          "alias": "first_name"
+        },
+        {
+          "column": "p.middle_name",
+          "alias": "middle_name"
+        },
+        {
+          "column": "p.thirdname",
+          "alias": "thirdname"
+        },
+        {
+          "column": "p.last_name",
+          "alias": "last_name"
+        },
+        {
+          "column": "p.registration_no",
+          "alias": "registration_no"
+        },
+        {
+          "column": "p.patientid",
+          "alias": "patientid"
+        },
+        {
+          "column": "g.display",
+          "alias": "gender_display"
+        },
+        {
+          "column": "p.gender",
+          "alias": "gender"
+        },
+        {
+          "column": "p.date_of_birth",
+          "alias": "date_of_birth"
+        },
+        {
+          "column": "p.age",
+          "alias": "age"
+        }
+      ]
+    },
+    {
+      "id": "demographics_2",
+      "title": "Demographics",
+      "anchor": "patient",
+      "alias": "p",
+      "joins": [
+        {
+          "anchor": "nationality",
+          "alias": "n",
+          "type": "LEFT JOIN",
+          "from_alias": "p",
+          "via_column": "Nationality"
+        },
+        {
+          "anchor": "marital_status",
+          "alias": "ms",
+          "type": "LEFT JOIN",
+          "from_alias": "p",
+          "via_column": "MaritalStatus"
+        }
+      ],
+      "select": [
+        {
+          "column": "p.ageinmonths",
+          "alias": "ageinmonths"
+        },
+        {
+          "column": "n.display",
+          "alias": "nationality_display"
+        },
+        {
+          "column": "p.nationality",
+          "alias": "nationality"
+        },
+        {
+          "column": "ms.display",
+          "alias": "marital_status_display"
+        },
+        {
+          "column": "p.maritalstatus",
+          "alias": "maritalstatus"
+        },
+        {
+          "column": "p.mobile",
+          "alias": "mobile"
+        },
+        {
+          "column": "p.alternate_mobile",
+          "alias": "alternate_mobile"
+        },
+        {
+          "column": "p.passportno",
+          "alias": "passportno"
+        },
+        {
+          "column": "p.nationalno",
+          "alias": "nationalno"
+        },
+        {
+          "column": "p.emailaddress",
+          "alias": "emailaddress"
+        }
+      ]
+    },
+    {
+      "id": "demographics_3",
+      "title": "Demographics",
+      "anchor": "patient",
+      "alias": "p",
+      "joins": [],
+      "select": [
+        {
+          "column": "p.r_firstname",
+          "alias": "r_firstname"
+        },
+        {
+          "column": "p.r_middlename",
+          "alias": "r_middlename"
+        },
+        {
+          "column": "p.r_thirdname",
+          "alias": "r_thirdname"
+        },
+        {
+          "column": "p.r_familyname",
+          "alias": "r_familyname"
+        },
+        {
+          "column": "p.nokfirstname",
+          "alias": "nokfirstname"
+        },
+        {
+          "column": "p.nokmiddlename",
+          "alias": "nokmiddlename"
+        },
+        {
+          "column": "p.noklastname",
+          "alias": "noklastname"
+        },
+        {
+          "column": "p.nokfamilyname",
+          "alias": "nokfamilyname"
+        },
+        {
+          "column": "p.nokrelationship",
+          "alias": "nokrelationship"
+        },
+        {
+          "column": "p.nokmobile",
+          "alias": "nokmobile"
+        },
+        {
+          "column": "p.nokemail",
+          "alias": "nokemail"
+        }
+      ]
+    },
+    {
+      "id": "visits",
+      "title": "Visit History",
+      "anchor": "visit",
+      "alias": "v",
+      "joins": [
+        {
+          "anchor": "department",
+          "alias": "d",
+          "type": "LEFT JOIN",
+          "from_alias": "v"
+        },
+        {
+          "anchor": "doctor",
+          "alias": "e",
+          "type": "LEFT JOIN",
+          "from_alias": "v"
+        }
+      ],
+      "select": [
+        {
+          "column": "v.visit_id",
+          "alias": "visit_id"
+        },
+        {
+          "column": "v.VisitNo",
+          "alias": "VisitNo"
+        },
+        {
+          "column": "v.TypeOfVisit",
+          "alias": "TypeOfVisit"
+        },
+        {
+          "column": "v.VisitDate",
+          "alias": "VisitDate"
+        },
+        {
+          "column": "v.Age",
+          "alias": "Age"
+        },
+        {
+          "column": "v.FollowUpDays",
+          "alias": "FollowUpDays"
+        },
+        {
+          "column": "v.WardID",
+          "alias": "WardID"
+        },
+        {
+          "column": "v.RoomID",
+          "alias": "RoomID"
+        },
+        {
+          "column": "v.BedID",
+          "alias": "BedID"
+        },
+        {
+          "column": "v.DepartmentID",
+          "alias": "DepartmentID"
+        },
+        {
+          "column": "v.DocInCharge",
+          "alias": "DocInCharge"
+        },
+        {
+          "column": "d.display",
+          "alias": "department_name"
+        },
+        {
+          "alias": "doctor_name",
+          "display_columns": [
+            "e.firstname",
+            "e.lastname"
+          ],
+          "compose": "concat_space"
+        }
+      ],
+      "order_by": "v.VisitDate DESC",
+      "limit": 10
+    },
+    {
+      "id": "clinical_assessments",
+      "title": "Clinical Assessment",
+      "anchor": "assessment",
+      "alias": "a",
+      "select": [
+        {
+          "column": "a.reasonforconsultation",
+          "alias": "reasonforconsultation"
+        },
+        {
+          "column": "a.historyofillness",
+          "alias": "historyofillness"
+        },
+        {
+          "column": "a.initialdignosis",
+          "alias": "initialdignosis"
+        },
+        {
+          "column": "a.treatmentplan",
+          "alias": "treatmentplan"
+        },
+        {
+          "column": "a.significantsigns",
+          "alias": "significantsigns"
+        },
+        {
+          "column": "a.generalexamination",
+          "alias": "generalexamination"
+        },
+        {
+          "column": "a.pastmedicalsurgical",
+          "alias": "pastmedicalsurgical"
+        },
+        {
+          "column": "a.durationofillness",
+          "alias": "durationofillness"
+        },
+        {
+          "column": "a.painscore",
+          "alias": "painscore"
+        },
+        {
+          "column": "a.painsite",
+          "alias": "painsite"
+        }
+      ],
+      "where_extra": "a.cancelled IS NULL",
+      "order_by": "a.insertedon DESC",
+      "limit": 10
+    },
+    {
+      "id": "allergies",
+      "title": "Allergies",
+      "anchor": "allergy_nurse",
+      "alias": "n",
+      "joins": [
+        {
+          "anchor": "allergy_general",
+          "alias": "a",
+          "type": "LEFT JOIN",
+          "from_alias": "n",
+          "via_column": "allergy",
+          "cast_join": "CHAR"
+        },
+        {
+          "anchor": "allergy_food",
+          "alias": "af",
+          "type": "LEFT JOIN",
+          "from_alias": "n",
+          "via_column": "allergy",
+          "cast_join": "CHAR"
+        },
+        {
+          "anchor": "allergy_medicine",
+          "alias": "am",
+          "type": "LEFT JOIN",
+          "from_alias": "n",
+          "via_column": "allergy",
+          "cast_join": "CHAR"
+        }
+      ],
+      "select": [
+        {
+          "column": "COALESCE(am.display, af.display, a.display, n.allergy)",
+          "alias": "Allergy Name"
+        },
+        {
+          "column": "n.reaction",
+          "alias": "Reaction"
+        }
+      ],
+      "unscoped_select": [
+        {
+          "column": "v.visitno",
+          "alias": "Visit No",
+          "join_visit": true
+        }
+      ],
+      "where_extra": "n.allergy IS NOT NULL",
+      "order_by": "n.updatedon DESC"
+    },
+    {
+      "id": "vitals",
+      "title": "Vital Signs Chart",
+      "anchor": "vitals",
+      "alias": "t",
+      "is_vitals": true,
+      "select": [
+        {
+          "column": "t.reading_datetime",
+          "alias": "Vitals Datetime"
+        },
+        {
+          "column": "t.systolic",
+          "alias": "Systolic BP"
+        },
+        {
+          "column": "t.diastolic",
+          "alias": "Diastolic BP"
+        },
+        {
+          "column": "t.temperature",
+          "alias": "Temperature"
+        },
+        {
+          "column": "t.pulse",
+          "alias": "Pulse"
+        },
+        {
+          "column": "t.respiratory",
+          "alias": "Respiratory"
+        }
+      ],
+      "unscoped_select": [
+        {
+          "column": "v.visitno",
+          "alias": "Visit No",
+          "join_visit": true
+        }
+      ],
+      "order_by": "t.reading_datetime DESC"
+    },
+    {
+      "id": "labs",
+      "title": "Lab Test Results",
+      "anchor": "lab_result",
+      "alias": "ltr",
+      "select": [
+        {
+          "column": "ltr.test_name",
+          "alias": "Test Name"
+        },
+        {
+          "column": "ltr.param_name",
+          "alias": "Parameter Name"
+        },
+        {
+          "column": "ltr.result",
+          "alias": "Result"
+        },
+        {
+          "column": "ltr.paramnormalrange",
+          "alias": "Normal Range"
+        },
+        {
+          "column": "ltr.paramlow",
+          "alias": "Low"
+        },
+        {
+          "column": "ltr.paramhigh",
+          "alias": "High"
+        },
+        {
+          "column": "ltr.critical",
+          "alias": "Critical"
+        }
+      ],
+      "unscoped_select": [
+        {
+          "column": "v.visitno",
+          "alias": "Visit No",
+          "join_visit": true
+        },
+        {
+          "column": "COALESCE(ltr.resultdttime, v.visitdate)",
+          "alias": "Timing"
+        }
+      ],
+      "order_by": "ltr.resultdttime DESC"
+    },
+    {
+      "id": "radiology",
+      "title": "Radiology",
+      "anchor": "radiology_result",
+      "alias": "res",
+      "joins": [
+        {
+          "anchor": "radiology_services",
+          "alias": "srv",
+          "type": "LEFT JOIN",
+          "from_alias": "res"
+        }
+      ],
+      "select": [
+        {
+          "column": "srv.display",
+          "alias": "Service Name"
+        },
+        {
+          "column": "srv.Template",
+          "alias": "HTML template"
+        },
+        {
+          "column": "res.result",
+          "alias": "Result"
+        }
+      ],
+      "unscoped_select": [
+        {
+          "column": "v.visitno",
+          "alias": "Visit No",
+          "join_visit": true
+        }
+      ],
+      "order_by": "res.insertedon DESC"
+    },
+    {
+      "id": "prescriptions",
+      "title": "Prescriptions",
+      "anchor": "prescription_master",
+      "alias": "pmst",
+      "joins": [
+        {
+          "anchor": "prescription_detail",
+          "alias": "dtl",
+          "type": "JOIN",
+          "from_alias": "pmst"
+        },
+        {
+          "anchor": "drug",
+          "alias": "drug",
+          "type": "LEFT JOIN",
+          "from_alias": "dtl"
+        },
+        {
+          "anchor": "frequency",
+          "alias": "freq",
+          "type": "LEFT JOIN",
+          "from_alias": "dtl"
+        }
+      ],
+      "select": [
+        {
+          "column": "drug.display",
+          "alias": "Drug Name"
+        },
+        {
+          "column": "dtl.dosage",
+          "alias": "Dosage"
+        },
+        {
+          "column": "COALESCE(freq.display, dtl.frequency)",
+          "alias": "Frequency"
+        },
+        {
+          "column": "dtl.duration",
+          "alias": "Duration"
+        },
+        {
+          "column": "dtl.quantity",
+          "alias": "Quantity"
+        },
+        {
+          "column": "dtl.notes",
+          "alias": "Notes"
+        },
+        {
+          "column": "pmst.datetime",
+          "alias": "Prescription Date"
+        }
+      ],
+      "unscoped_select": [
+        {
+          "column": "v.visitno",
+          "alias": "Visit No",
+          "join_visit": true
+        }
+      ],
+      "order_by": "pmst.datetime DESC"
+    },
+    {
+      "id": "operations",
+      "title": "Operations & Surgeries",
+      "anchor": "operation_scheduling",
+      "alias": "ot",
+      "joins": [
+        {
+          "anchor": "operation_detail",
+          "alias": "dtl",
+          "type": "LEFT JOIN",
+          "from_alias": "ot"
+        },
+        {
+          "anchor": "service",
+          "alias": "srv",
+          "type": "LEFT JOIN",
+          "from_alias": "dtl"
+        }
+      ],
+      "select": [
+        {
+          "column": "ot.scheduleno",
+          "alias": "Schedule No"
+        },
+        {
+          "column": "COALESCE(srv.display, 'Not recorded')",
+          "alias": "Operation Name"
+        },
+        {
+          "column": "ot.operationdate",
+          "alias": "Operation Date"
+        },
+        {
+          "column": "ot.starttime",
+          "alias": "Start Time"
+        },
+        {
+          "column": "ot.endtime",
+          "alias": "End Time"
+        }
+      ],
+      "unscoped_select": [
+        {
+          "column": "v.visitno",
+          "alias": "Visit No",
+          "join_visit": true
+        }
+      ],
+      "order_by": "ot.operationdate DESC"
+    },
+    {
+      "id": "discharge_summary",
+      "title": "Discharge Summary",
+      "anchor": "discharge_summary",
+      "alias": "ds",
+      "joins": [
+        {
+          "anchor": "discharge_type",
+          "alias": "dt",
+          "type": "LEFT JOIN",
+          "from_alias": "ds",
+          "via_column": "dischargetype_id",
+          "cast_join": "CHAR"
+        }
+      ],
+      "select": [
+        {
+          "column": "ds.admission_diagnosis",
+          "alias": "Chief Complaint"
+        },
+        {
+          "column": "ds.final_diagnosis",
+          "alias": "Final Diagnosis"
+        },
+        {
+          "column": "ds.history",
+          "alias": "History"
+        },
+        {
+          "column": "ds.hospital_course",
+          "alias": "Hospital Course"
+        },
+        {
+          "column": "ds.admission_medication",
+          "alias": "Admission Medication"
+        },
+        {
+          "column": "ds.medication",
+          "alias": "Discharge Medication"
+        },
+        {
+          "column": "ds.laboratory",
+          "alias": "Laboratory"
+        },
+        {
+          "column": "ds.radiology",
+          "alias": "Radiology"
+        },
+        {
+          "column": "ds.patient_condition",
+          "alias": "Patient Condition"
+        },
+        {
+          "column": "ds.remark",
+          "alias": "Remarks"
+        }
+      ],
+      "unscoped_select": [
+        {
+          "column": "v.visitno",
+          "alias": "Visit No",
+          "join_visit": true
+        }
+      ],
+      "where_extra": "ds.cancelstatus IS NULL",
+      "order_by": "ds.insertedon DESC",
+      "format": "paragraph"
+    }
+  ]
+}

@@ -14,17 +14,19 @@ class SessionState:
         self.doctor = DoctorContext(doctor_id=doctor_id)
         self.patient: Optional[PatientContext] = None
         self.visit: Optional[VisitContext] = None
+        self.pending_write: Optional[dict] = None
         self.last_sql: Optional[str] = None
         self.history: list = []
         self.created_at = time.time()
         self.last_accessed = time.time()
 
-    def add_history(self, question: str, sql: str, rows_returned: int, intent: str):
+    def add_history(self, question: str, sql: str, rows_returned: int, intent: str, answer: str = ""):
         self.history.append({
             "question": question,
             "sql": sql,
             "rows": rows_returned,
             "intent": intent,
+            "answer": answer,
             "timestamp": time.time()
         })
         self.last_sql = sql
@@ -43,8 +45,18 @@ class SessionState:
         if self.visit:
             ctx.append(f"Active Visit ID: {self.visit.visit_id}")
         
+        # Append recent chat history (last 3 interactions)
+        if self.history:
+            ctx.append("\n--- RECENT CHAT HISTORY ---")
+            recent = self.history[-3:]
+            for i, h in enumerate(recent, 1):
+                ctx.append(f"User Question: {h['question']}")
+                if h.get("answer"):
+                    ctx.append(f"AI Assistant Response/Data:\n{h['answer']}")
+                ctx.append("---------------------------")
+        
         if not ctx:
-            return "No patient or visit context is currently loaded."
+            return "No patient or visit context is currently loaded. No chat history."
             
         return "\n".join(ctx)
 

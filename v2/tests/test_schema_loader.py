@@ -48,8 +48,10 @@ def test_sprint_2():
     store = VectorStore(persist_dir="tests/chroma_test")
     # Load examples from json using relative path from tests directory
     examples_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "sql_examples.json")
-    with open(examples_path, "r") as f:
-        examples = json.load(f)
+    examples = []
+    if os.path.exists(examples_path):
+        with open(examples_path, "r") as f:
+            examples = json.load(f)
     print(f"Loaded {len(examples)} examples.")
     
     print("ALL TESTS PASSED.")

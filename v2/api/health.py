@@ -18,21 +18,20 @@ def check_mysql():
         logger.error(f"MySQL health check failed: {e}")
         return False
 
-def check_ollama():
-    """Check if Ollama is running and required models are loaded."""
-    try:
-        res = requests.get("http://localhost:11434/api/tags", timeout=5)
-        if res.status_code == 200:
-            models = [m["name"] for m in res.json().get("models", [])]
-            missing = [m for m in [LLM_MODEL, SQL_MODEL] if m not in models]
-            if missing:
-                logger.error(f"Ollama is running but missing models: {missing}")
-                return False
+def check_groq():
+    """Check if GROQ API key is present."""
+    import os
+    from config.settings import LLM_API_KEY
+    if LLM_API_KEY:
+        return True
+    
+    # Check for rotated keys
+    for k, v in os.environ.items():
+        if k.startswith("LLM_API_KEY_") and v.strip():
             return True
-        return False
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Ollama health check failed: {e}")
-        return False
+            
+    logger.error("No LLM_API_KEY or LLM_API_KEY_n is set.")
+    return False
 
 def check_directories():
     """Verify required directories exist and create them if they don't."""
@@ -58,7 +57,7 @@ def run_health_checks():
     checks = {
         "Directories": (check_directories, True),
         "MySQL": (check_mysql, False),
-        "Ollama": (check_ollama, True),
+        "Groq": (check_groq, True),
     }
     
     failed_critical = []

@@ -16,12 +16,13 @@ def init_pool():
             _pool = mysql.connector.pooling.MySQLConnectionPool(
                 pool_name=DB_POOL_NAME,
                 pool_size=DB_POOL_SIZE,
-                pool_reset_session=True,
+                pool_reset_session=False,
                 host=DB_HOST,
                 port=DB_PORT,
                 user=DB_USER,
                 password=DB_PASSWORD,
-                database=DB_NAME
+                database=DB_NAME,
+                compress=True
             )
             logger.info("Connection pool initialized successfully.")
         except mysql.connector.Error as err:

@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from llm.ollama_client import OllamaClient
+from llm.llm_client import LLMClient
 from sql_pipeline.intent_detector import IntentDetector
 from database.schema_loader import SchemaLoader
 from database.relationship_graph import RelationshipGraph
@@ -19,11 +19,11 @@ def test_sprint_3():
     print("Initializing components...")
     
     # Mock LLM response to avoid network call in tests
-    class MockOllamaClient:
-        def generate(self, prompt, **kwargs):
-            return "BILLING"
+    class MockLLMClient:
+        def generate(self, prompt, model=None, temperature=None):
+            return "Mocked Answer"
             
-    llm = MockOllamaClient()
+    llm = MockLLMClient()
     intent_detector = IntentDetector(llm)
     
     loader = SchemaLoader()

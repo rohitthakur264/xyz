@@ -52,4 +52,24 @@ class AuditLogger:
         with open(self.log_file, "a") as f:
             f.write(json.dumps(record) + "\n")
 
+    def log_write(self, doctor_id: str, patient_id: str, visit_id: str, 
+                  entity_type: str, table: str, record_id: str, 
+                  field_values: dict, success: bool, error: str):
+        """Log a write operation."""
+        record = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "type": "WRITE",
+            "doctor_id": doctor_id,
+            "patient_id": patient_id,
+            "visit_id": visit_id,
+            "entity_type": entity_type,
+            "table": table,
+            "record_id": record_id,
+            "field_values": field_values,
+            "success": success,
+            "error": error
+        }
+        with open(self.log_file, "a") as f:
+            f.write(json.dumps(record) + "\n")
+
 audit_logger = AuditLogger(os.path.join(LOG_DIR, "audit_log.jsonl"))

@@ -3,3 +3,17 @@
 __pycache__/
 chroma_data/
 logs/
+
+# Data, Dumps & Temp Files
+*.sql
+*.docx
+*.pdf
+*.zip
+extracted_v2*/
+schema_dump.json
+resp.json
+scratch_markdown.md
+**/chroma_db/
+**/data/chroma_db/
+.pytest_cache/
+*.pyc

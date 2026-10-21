@@ -21,17 +21,24 @@ class ExampleRetriever:
         if intent != "GENERAL":
             where_clause = {"intent": intent}
             
-        results = self.vector_store.example_collection.query(
-            query_embeddings=self.vector_store._get_embeddings([question]),
-            n_results=k,
-            where=where_clause
-        )
-        
+        try:
+            results = self.vector_store.example_collection.query(
+                query_embeddings=self.vector_store._get_embeddings([question]),
+                n_results=k,
+                where=where_clause
+            )
+        except Exception as e:
+            # A RAG/Chroma failure must never crash a chat request.
+            logger.warning(f"Example retrieval failed ({e}); continuing without examples.")
+            return []
+
         examples = []
         if results and results.get("metadatas") and len(results["metadatas"]) > 0:
-            for metadata in results["metadatas"][0]:
+            documents = results.get("documents", [[]])[0] if results.get("documents") else []
+            for idx, metadata in enumerate(results["metadatas"][0]):
                 if metadata:
                     examples.append({
+                        "question": documents[idx] if idx < len(documents) else "",
                         "sql": metadata.get("sql"),
                         "tables": metadata.get("tables", "").split(",")
                     })

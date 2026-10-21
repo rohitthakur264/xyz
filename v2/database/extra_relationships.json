@@ -1,0 +1,260 @@
+[
+  {
+    "table": "fhir_prescription_dtl",
+    "column_name": "preid",
+    "referenced_table": "fhir_drug_sale_mst",
+    "referenced_column": "prescriptionid"
+  },
+  {
+    "table": "fhir_drug_sale_mst",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_bill_mst",
+    "column_name": "visit_id",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_visit_mst",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_order_mst",
+    "column_name": "ordpatientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_patient_mst",
+    "column_name": "nationality",
+    "referenced_table": "fhir_nationality_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "OT_Scheduling_MSt",
+    "column_name": "scheduleid",
+    "referenced_table": "OT_SCHEDULLING_DTL",
+    "referenced_column": "schid"
+  },
+  {
+    "table": "OT_SCHEDULLING_DTL",
+    "column_name": "procedureid",
+    "referenced_table": "fhir_service_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "OT_Scheduling_MSt",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_drug_sale_dtl",
+    "column_name": "drugid",
+    "referenced_table": "fhir_drug_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_prescription_dtl",
+    "column_name": "itemid",
+    "referenced_table": "fhir_drug_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_lab_test_result",
+    "column_name": "testid",
+    "referenced_table": "fhir_lab_test_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_lab_test_result",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_lab_test_result",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_patient_allergy",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_patient_allergy",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_prescription_dtl",
+    "column_name": "frequency",
+    "referenced_table": "fhir_prescription_frequency",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_prescription_mst",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_prescription_dtl",
+    "column_name": "preid",
+    "referenced_table": "fhir_prescription_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "WD_TPRBP_DTLS",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "WD_TPRBP_DTLS",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_patient_mst",
+    "column_name": "Gender",
+    "referenced_table": "fhir_gender_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_patient_mst",
+    "column_name": "MaritalStatus",
+    "referenced_table": "fhir_marital_status_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_visit_mst",
+    "column_name": "DepartmentID",
+    "referenced_table": "fhir_department_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_visit_mst",
+    "column_name": "docincharge",
+    "referenced_table": "fhir_emp_mst",
+    "referenced_column": "empid"
+  },
+  {
+    "table": "fhir_op_initial_assessment",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_op_initial_assessment",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_op_nurse_assessment_dtl",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_op_nurse_assessment_dtl",
+    "column_name": "allergy",
+    "referenced_table": "fhir_allergies_mst",
+    "referenced_column": "code"
+  },
+  {
+    "table": "fhir_op_nurse_assessment_dtl",
+    "column_name": "allergy",
+    "referenced_table": "fhir_allergyfoodmst",
+    "referenced_column": "code"
+  },
+  {
+    "table": "fhir_op_nurse_assessment_dtl",
+    "column_name": "allergy",
+    "referenced_table": "fhir_allergymedicinemst",
+    "referenced_column": "code"
+  },
+  {
+    "table": "fhir_visit_mst",
+    "column_name": "dischargetype",
+    "referenced_table": "fhir_discharge_type_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_rad_imgresult",
+    "column_name": "serviceid",
+    "referenced_table": "fhir_rad_imgservices",
+    "referenced_column": "serviceid"
+  },
+  {
+    "table": "fhir_ot_scheduling_mst",
+    "column_name": "id",
+    "referenced_table": "fhir_ot_schedulling_dtl",
+    "referenced_column": "schid"
+  },
+  {
+    "table": "fhir_ot_schedulling_dtl",
+    "column_name": "procedureid",
+    "referenced_table": "fhir_service_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_tprbp_dtl",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_tprbp_dtl",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_rad_imgresult",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_op_nurse_assessment_dtl",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_Dischargesummary",
+    "column_name": "patientid",
+    "referenced_table": "fhir_patient_mst",
+    "referenced_column": "patientid"
+  },
+  {
+    "table": "fhir_Dischargesummary",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  },
+  {
+    "table": "fhir_Dischargesummary",
+    "column_name": "dischargetype_id",
+    "referenced_table": "fhir_discharge_type_mst",
+    "referenced_column": "id"
+  },
+  {
+    "table": "fhir_ot_scheduling_mst",
+    "column_name": "visitid",
+    "referenced_table": "fhir_visit_mst",
+    "referenced_column": "visit_id"
+  }
+]
