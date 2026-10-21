@@ -2,6 +2,9 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
+_v2_env = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+if os.path.exists(_v2_env):
+    load_dotenv(_v2_env, override=True)
 
 # LLM settings
 LLM_API_KEY = os.getenv("LLM_API_KEY", os.getenv("GROQ_API", ""))
